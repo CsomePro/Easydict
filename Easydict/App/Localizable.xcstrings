@@ -1,6 +1,88 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+  "setting.general.display.enable_math_rendering.description": {
+    "extractionState": "manual",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Renders $…$, $$…$$, \\(…\\), and \\[…\\] locally in translations, including the glass mini window. Copying preserves the LaTeX source."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "在译文中本地渲染 $…$、$$…$$、\\(…\\) 和 \\[…\\]，也支持玻璃迷你窗口。复制时保留 LaTeX 源码。"
+        }
+      },
+      "zh-Hant": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "在譯文中本機算繪 $…$、$$…$$、\\(…\\) 和 \\[…\\]，也支援玻璃迷你視窗。複製時保留 LaTeX 原始碼。"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Renderiza $…$, $$…$$, \\(…\\) y \\[…\\] localmente en las traducciones, incluida la miniventana de cristal. Al copiar se conserva el código LaTeX."
+        }
+      },
+      "ja": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "訳文内の $…$、$$…$$、\\(…\\)、\\[…\\] をローカルで描画します。ガラスミニウインドウにも対応し、コピー時は LaTeX ソースを保持します。"
+        }
+      },
+      "sk": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Lokálne vykreslí $…$, $$…$$, \\(…\\) a \\[…\\] v prekladoch aj v sklenenom mini okne. Kopírovanie zachová zdroj LaTeX."
+        }
+      }
+    }
+  },
+  "setting.general.display.enable_math_rendering": {
+    "extractionState": "manual",
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Enable math rendering (MathJax)"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "启用数学公式渲染（MathJax）"
+        }
+      },
+      "zh-Hant": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "啟用數學公式算繪（MathJax）"
+        }
+      },
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Activar fórmulas matemáticas (MathJax)"
+        }
+      },
+      "ja": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "数式の描画を有効にする（MathJax）"
+        }
+      },
+      "sk": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Zapnúť vykresľovanie vzorcov (MathJax)"
+        }
+      }
+    }
+  },
     "glass.mini.pin" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -9,6 +9,8 @@ import SwiftUI
 /// Selectable text with an unobtrusive overlay scroller, independent of the system's legacy scrollbar setting.
 struct GlassMiniTextView: NSViewRepresentable {
     let text: String
+    let allowsMath: Bool
+    let didMeasure: (String, CGFloat) -> Void
 
     func makeNSView(context: Context) -> NSScrollView {
         let scrollView = NSScrollView()
@@ -21,10 +23,10 @@ struct GlassMiniTextView: NSViewRepresentable {
         scrollView.verticalScroller?.controlSize = .mini
         scrollView.focusRingType = .none
 
-        let textView = NSTextView(frame: NSRect(x: 0, y: 0, width: 1, height: 1))
+        let textView = MarkdownLabel(frame: NSRect(x: 0, y: 0, width: 1, height: 1))
         textView.isEditable = false
         textView.isSelectable = true
-        textView.isRichText = false
+        textView.markdownEnabled = false
         textView.drawsBackground = false
         textView.focusRingType = .none
         textView.textContainerInset = .zero
@@ -36,19 +38,25 @@ struct GlassMiniTextView: NSViewRepresentable {
         textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         textView.textContainer?.containerSize = NSSize(width: 1, height: CGFloat.greatestFiniteMagnitude)
         textView.textContainer?.widthTracksTextView = true
+        textView.textForegroundColor = .labelColor
+        textView.font = .systemFont(ofSize: 16)
+        textView.lineSpacing = 4
         scrollView.documentView = textView
         return scrollView
     }
 
     func updateNSView(_ scrollView: NSScrollView, context: Context) {
-        guard let textView = scrollView.documentView as? NSTextView, textView.string != text else { return }
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.lineSpacing = 4
-        textView.textStorage?.setAttributedString(NSAttributedString(string: text, attributes: [
-            .font: NSFont.systemFont(ofSize: 16),
-            .foregroundColor: NSColor.labelColor,
-            .paragraphStyle: paragraph,
-        ]))
+        guard let textView = scrollView.documentView as? MarkdownLabel else { return }
+        textView.mathEnabled = allowsMath
+        textView.didUpdateRenderedText = { [weak textView] in
+            guard let textView, let manager = textView.layoutManager,
+                  let container = textView.textContainer else { return }
+            manager.ensureLayout(for: container)
+            didMeasure(textView.text ?? "", ceil(manager.usedRect(for: container).height))
+        }
+        textView.didChangeLayoutWidth = textView.didUpdateRenderedText
+        guard textView.text != text else { return }
+        textView.text = text
         scrollView.contentView.scroll(to: .zero)
         scrollView.reflectScrolledClipView(scrollView.contentView)
     }

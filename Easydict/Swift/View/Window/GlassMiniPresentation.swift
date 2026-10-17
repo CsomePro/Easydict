@@ -34,7 +34,12 @@ final class GlassMiniPresentation: NSObject {
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString(state.text, forType: .string)
             },
-            close: { EZWindowManager.shared().closeFloating(.mini) }
+            close: { EZWindowManager.shared().closeFloating(.mini) },
+            didMeasure: { [weak self] text, height in
+                guard let self, state.phase == .result, state.text == text else { return }
+                renderedTextHeight = height
+                if state.contentVisible { showContent(animated: false) }
+            }
         ))
         hostingView = host
         host.focusRingType = .none
@@ -120,6 +125,7 @@ final class GlassMiniPresentation: NSObject {
             return
         }
         state.phase = .result
+        renderedTextHeight = nil
         state.text = translatedText
         showContent(animated: true)
     }
@@ -137,6 +143,7 @@ final class GlassMiniPresentation: NSObject {
     private var hostingView: NSView?
     private let state = GlassMiniState()
     private let animator = GlassMiniAnimator()
+    private var renderedTextHeight: CGFloat?
     private let originalStyle: NSWindow.StyleMask
     private let originalMinimum: NSSize
     private let originalFrame: NSRect
@@ -152,7 +159,8 @@ final class GlassMiniPresentation: NSObject {
             options: [.usesLineFragmentOrigin, .usesFontLeading],
             attributes: [.font: NSFont.systemFont(ofSize: 16), .paragraphStyle: paragraph]
         )
-        let height = min(max(ceil(bounds.height) + 90, 124), screen.height * 0.65)
+        let textHeight = state.phase == .result ? renderedTextHeight ?? ceil(bounds.height) : ceil(bounds.height)
+        let height = min(max(textHeight + 90, 124), screen.height * 0.65)
         state.contentVisible = !animated
         animator.resize(window, to: NSSize(width: width, height: height), animated: animated) { [weak self] in
             guard let self else { return }
@@ -160,6 +168,7 @@ final class GlassMiniPresentation: NSObject {
             withAnimation(reduceMotion ? nil : .easeOut(duration: 0.12)) {
                 self.state.contentVisible = true
             }
+            if animated, self.renderedTextHeight != nil { self.showContent(animated: false) }
         }
     }
 }

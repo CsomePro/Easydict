@@ -668,6 +668,11 @@
 		AC780F5DA26141D8B242F743 /* GlassMiniPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E60C3454C2F436B89336930 /* GlassMiniPresentation.swift */; };
 		741192BE612C4CD98E7656C3 /* GlassMiniTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEC81D3645148B5BA0868AF /* GlassMiniTextView.swift */; };
 		23531D12B071478897B0957F /* GlassMiniDragArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48843F621A64AB2911F3C5E /* GlassMiniDragArea.swift */; };
+		D8622B2ED141415CA02D9AFD /* MathExpressionParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76927D1F8F62422C82B715C6 /* MathExpressionParser.swift */; };
+		018BF73823E5432EA2EAC243 /* MathJaxRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2AD04C6CEFE410A8822FD21 /* MathJaxRenderer.swift */; };
+		69D3280FA81B4FA8AEEE4C65 /* MathAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = B092D787853C4F2E8EA55918 /* MathAttributedString.swift */; };
+		0900C1AE46624102A8ED466A /* mathjax-tex-svg.js in Resources */ = {isa = PBXBuildFile; fileRef = 8FD797C37DCB49EE8622F5AD /* mathjax-tex-svg.js */; };
+		3446AF1684DA4CF68257D06E /* MathJax-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = D126887A3C1241AC8F9FC2EC /* MathJax-LICENSE.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1458,6 +1463,11 @@
 		0E60C3454C2F436B89336930 /* GlassMiniPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniPresentation.swift; sourceTree = "<group>"; };
 		DCEC81D3645148B5BA0868AF /* GlassMiniTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniTextView.swift; sourceTree = "<group>"; };
 		F48843F621A64AB2911F3C5E /* GlassMiniDragArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassMiniDragArea.swift; sourceTree = "<group>"; };
+		76927D1F8F62422C82B715C6 /* MathExpressionParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MathExpressionParser.swift"; sourceTree = "<group>"; };
+		B2AD04C6CEFE410A8822FD21 /* MathJaxRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MathJaxRenderer.swift"; sourceTree = "<group>"; };
+		B092D787853C4F2E8EA55918 /* MathAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MathAttributedString.swift"; sourceTree = "<group>"; };
+		8FD797C37DCB49EE8622F5AD /* mathjax-tex-svg.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "mathjax-tex-svg.js"; sourceTree = "<group>"; };
+		D126887A3C1241AC8F9FC2EC /* MathJax-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "MathJax-LICENSE.txt"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3611,6 +3621,7 @@
 				03779F122BB256B5008D3C42 /* DefaultAPIKeys */,
 				6A8C988B2BAC88A600DB835A /* Localization */,
 				02DEDC042026043000000001 /* Markdown */,
+				21466C34189746C6944103F7 /* Math */,
 				967712EC2B5B941600105E0F /* Shortcut */,
 			);
 			path = Feature;
@@ -3991,6 +4002,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		21466C34189746C6944103F7 /* Math */ = {
+			isa = PBXGroup;
+			children = (
+				76927D1F8F62422C82B715C6 /* MathExpressionParser.swift */,
+				B2AD04C6CEFE410A8822FD21 /* MathJaxRenderer.swift */,
+				B092D787853C4F2E8EA55918 /* MathAttributedString.swift */,
+				8FD797C37DCB49EE8622F5AD /* mathjax-tex-svg.js */,
+				D126887A3C1241AC8F9FC2EC /* MathJax-LICENSE.txt */,
+			);
+			path = Math;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -4232,6 +4255,8 @@
 				4D4D6D6F0000000000000003 /* MDictStyleScript.js in Resources */,
 				4D4D6D6F0000000000000004 /* darkreader.min.js in Resources */,
 				4D4D6D6F0000000000000005 /* DarkReader-LICENSE.txt in Resources */,
+				3446AF1684DA4CF68257D06E /* MathJax-LICENSE.txt in Resources */,
+				0900C1AE46624102A8ED466A /* mathjax-tex-svg.js in Resources */,
 				43D9DD6610A34B56B85C8813 /* GitHubCopilot-LICENSE.txt in Resources */,
 				03779F142BB256B5008D3C42 /* EncryptedSecretKeys.plist in Resources */,
 				E34250B62E681A3100CEC295 /* Easydict-26.icon in Resources */,
@@ -4504,6 +4529,9 @@
 				031C66E02EDB00010025D190 /* DictionaryHTMLRenderer.swift in Sources */,
 				B8D793EA87784E0B9D82C7FC /* MDictConfigurationView.swift in Sources */,
 				02DEDC04202604300000007E /* MarkdownRenderer.swift in Sources */,
+				69D3280FA81B4FA8AEEE4C65 /* MathAttributedString.swift in Sources */,
+				018BF73823E5432EA2EAC243 /* MathJaxRenderer.swift in Sources */,
+				D8622B2ED141415CA02D9AFD /* MathExpressionParser.swift in Sources */,
 				02DEDC04202604300000008E /* MarkdownLabel.swift in Sources */,
 				02DEDC04202604300000009E /* MarkdownToggleButton.swift in Sources */,
 				0338210C2F0EAF490087A361 /* AppleScriptTask.swift in Sources */,

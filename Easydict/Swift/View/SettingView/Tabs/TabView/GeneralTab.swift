@@ -112,11 +112,17 @@ struct GeneralTab: View {
                         systemSymbol: .docRichtext
                     )
                 }
+                Toggle(isOn: $enableMathRendering) {
+                    Label("setting.general.display.enable_math_rendering", systemSymbol: .function)
+                }
             } header: {
                 Text("setting.general.display.header")
             } footer: {
-                Text("setting.general.display.enable_markdown_rendering.description")
-                    .font(.footnote)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("setting.general.display.enable_markdown_rendering.description")
+                    Text("setting.general.display.enable_math_rendering.description")
+                }
+                .font(.footnote)
             }
 
             Section {
@@ -303,6 +309,7 @@ struct GeneralTab: View {
     @Default(.selectedMenuBarIcon) private var selectedMenuBarIcon
     @Default(.fontSizeOptionIndex) private var fontSizeOptionIndex
     @Default(.enableMarkdownRendering) private var enableMarkdownRendering
+    @Default(.enableMathRendering) private var enableMathRendering
 
     @Default(.includeBetaUpdates) private var includeBetaUpdates
 

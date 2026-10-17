@@ -268,9 +268,25 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
             if (text) {
                 EZLabel *resultLabel;
                 BOOL serviceIsStreaming = [self.service isStream];
-                if (serviceIsStreaming && errorMessage.length == 0) {
+                if (errorMessage.length == 0) {
                     EDMarkdownLabel *markdownLabel = [[EDMarkdownLabel alloc] init];
-                    markdownLabel.markdownEnabled = result.isMarkdownRenderingEnabled;
+                    markdownLabel.markdownEnabled = serviceIsStreaming && result.isMarkdownRenderingEnabled;
+                    __weak EDMarkdownLabel *expectedLabel = markdownLabel;
+                    __weak EZQueryResult *expectedResult = result;
+                    markdownLabel.didUpdateRenderedText = ^{
+                        mm_strongify(self);
+                        if (!self || self.result != expectedResult || expectedLabel.superview != self) {
+                            return;
+                        }
+                        [self refreshWithResult:self.result];
+                        if (self.updateViewHeightBlock) {
+                            self.updateViewHeightBlock(self.viewHeight);
+                        }
+                        if ([self.window isKindOfClass:[EZBaseQueryWindow class]]) {
+                            EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+                            [window.queryViewController updateCellWithResult:self.result reloadData:NO];
+                        }
+                    };
                     resultLabel = markdownLabel;
                 } else {
                     resultLabel = [[EZLabel alloc] init];
@@ -283,6 +299,8 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
                     resultLabel.paragraphSpacing = 0;
                 }
 
+                // Give vector formulas the actual text width before measuring attachments.
+                resultLabel.frame = NSMakeRect(0, 0, MAX(1, self.width - 2 * kHorizontalMargin_8), 0);
                 resultLabel.text = text;
                 resultLabel.delegate = self;
 

@@ -214,6 +214,9 @@ extension Defaults.Keys {
         default: true
     )
 
+    /// Renders delimited TeX formulas locally in translation text, independently of Markdown.
+    static let enableMathRendering = Key<Bool>("EZConfiguration_EnableMathRendering", default: false)
+
     static let autoSelectAllTextFieldText = Key<Bool>(
         "EZConfiguration_kAutoSelectAllTextFieldText",
         default: true

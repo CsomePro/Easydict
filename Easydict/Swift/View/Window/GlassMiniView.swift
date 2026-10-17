@@ -25,6 +25,7 @@ struct GlassMiniView: View {
     let retry: () -> Void
     let copy: () -> Void
     let close: () -> Void
+    let didMeasure: (String, CGFloat) -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -37,7 +38,7 @@ struct GlassMiniView: View {
                 loadingDots
             } else {
                 VStack(alignment: .leading, spacing: 12) {
-                    GlassMiniTextView(text: state.text)
+                    GlassMiniTextView(text: state.text, allowsMath: state.phase == .result, didMeasure: didMeasure)
                         .padding(.trailing, 18)
 
                     HStack {

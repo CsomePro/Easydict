@@ -7,7 +7,6 @@
 //
 
 import Defaults
-import LaunchAtLogin
 import SFSafeSymbols
 import SwiftUI
 
@@ -175,12 +174,7 @@ struct GeneralTab: View {
                     .labelsHidden()
                 }
 
-                LaunchAtLogin.Toggle {
-                    Text("launch_at_startup")
-                }
-                .onChange(of: LaunchAtLogin.isEnabled) { newValue in
-                    logSettings(["launch_at_startup": newValue])
-                }
+                LoginItemToggle()
 
                 Toggle(
                     isOn: $hideMenuBarIcon.didSet(execute: { state in

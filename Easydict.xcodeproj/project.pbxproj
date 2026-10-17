@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A41017100000000000000002 /* LoginItemToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41017100000000000000001 /* LoginItemToggle.swift */; };
 		D71101351011000000000003 /* EZQueryTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D71101351011000000000002 /* EZQueryTableView.m */; };
 		C0FFEEBF2026092400000000 /* GitHubCopilotDebugWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000000 /* GitHubCopilotDebugWindow.swift */; };
 		C0FFEEBF2026092400000001 /* GitHubCopilotEffort.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEEFD2026092400000001 /* GitHubCopilotEffort.swift */; };
@@ -692,6 +693,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A41017100000000000000001 /* LoginItemToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginItemToggle.swift; sourceTree = "<group>"; };
 		D71101351011000000000001 /* EZQueryTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EZQueryTableView.h; sourceTree = "<group>"; };
 		D71101351011000000000002 /* EZQueryTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EZQueryTableView.m; sourceTree = "<group>"; };
 		C0FFEEFD2026092400000000 /* GitHubCopilotDebugWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubCopilotDebugWindow.swift; sourceTree = "<group>"; };
@@ -1564,6 +1566,7 @@
 			isa = PBXGroup;
 			children = (
 				278540332B3DE04F004E9488 /* GeneralTab.swift */,
+				A41017100000000000000001 /* LoginItemToggle.swift */,
 				0A057D6C2B499A000025C51D /* ServiceTab.swift */,
 				0A1189A12F700001005C51D /* ServiceTabListViews.swift */,
 				0377C0F22F13FA4B00302A2C /* FavoritesTab.swift */,
@@ -4646,6 +4649,7 @@
 				039223C02E4B61980052F695 /* OCRImageView.swift in Sources */,
 				0AC11B222B4D16A500F07198 /* WindowAccessor.swift in Sources */,
 				278540342B3DE04F004E9488 /* GeneralTab.swift in Sources */,
+				A41017100000000000000002 /* LoginItemToggle.swift in Sources */,
 				AA0000012E00000000000001 /* QueryRecord.swift in Sources */,
 				03BDA7BC2A26DA280079D04F /* XPMArgumentSignature.m in Sources */,
 				03B0230229231FA6001C7E63 /* EZWordResultView.m in Sources */,

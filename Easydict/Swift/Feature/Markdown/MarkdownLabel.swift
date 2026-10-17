@@ -43,10 +43,25 @@ final class MarkdownLabel: EZLabel {
     }
 
     override func updateDisplayedText() {
-        renderGeneration += 1
-        let generation = renderGeneration
+        // Dynamic colors must be resolved in this view's appearance, including async completions.
+        effectiveAppearance.performAsCurrentDrawingAppearance { updateRenderedText() }
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        updateDisplayedText()
+    }
+
+    private func updateRenderedText() {
         let source = text ?? ""
         let renderMath = mathEnabled && Defaults[.enableMathRendering]
+        if mathSource != (renderMath ? source : nil) {
+            renderGeneration += 1
+            mathSource = renderMath ? source : nil
+            mathDocument = renderMath ? MathExpressionParser.parse(source) : nil
+            mathResults = nil
+            mathRequestPending = false
+        }
         guard markdownEnabled || renderMath else {
             super.updateDisplayedText()
             return
@@ -61,12 +76,27 @@ final class MarkdownLabel: EZLabel {
             textStorage?.setAttributedString(renderer.render(source))
             return
         }
-        let document = MathExpressionParser.parse(source)
+        guard let document = mathDocument else { return }
+        if mathResults == nil, !mathRequestPending {
+            let expressions = document.formulas.map(\.expression)
+            mathResults = MathJaxRenderer.shared.cachedResults(for: expressions)
+            if mathResults == nil {
+                mathRequestPending = true
+                let generation = renderGeneration
+                MathJaxRenderer.shared.prepare(expressions) { [weak self] results in
+                    guard let self, renderGeneration == generation else { return }
+                    mathResults = results
+                    mathRequestPending = false
+                    updateDisplayedText()
+                    didUpdateRenderedText?()
+                }
+            }
+        }
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineSpacing = lineSpacing
         paragraph.paragraphSpacing = paragraphSpacing
         let attributed = MathAttributedString.render(
-            document, markdown: markdownEnabled ? renderer : nil,
+            document, results: mathResults ?? [:], markdown: markdownEnabled ? renderer : nil,
             attributes: [
                 .font: font ?? .systemFont(ofSize: 14),
                 .foregroundColor: resolvedForegroundColor,
@@ -75,13 +105,6 @@ final class MarkdownLabel: EZLabel {
             maxWidth: max(1, frame.width - 2 * (textContainer?.lineFragmentPadding ?? 0))
         )
         textStorage?.setAttributedString(attributed)
-        let pending = document.formulas.map(\.expression).filter { MathJaxRenderer.shared.cached($0) == nil }
-        guard !pending.isEmpty else { return }
-        MathJaxRenderer.shared.prepare(pending) { [weak self] in
-            guard let self, renderGeneration == generation else { return }
-            updateDisplayedText()
-            didUpdateRenderedText?()
-        }
     }
 
     override func setFrameSize(_ newSize: NSSize) {
@@ -120,6 +143,10 @@ final class MarkdownLabel: EZLabel {
     // MARK: Private
 
     private var renderGeneration = 0
+    private var mathSource: String?
+    private var mathDocument: MathExpressionParser.Document?
+    private var mathResults: [String: MathJaxRenderer.Result]?
+    private var mathRequestPending = false
     private var mathPreference: AnyCancellable?
 
     private func observeMathPreference() {

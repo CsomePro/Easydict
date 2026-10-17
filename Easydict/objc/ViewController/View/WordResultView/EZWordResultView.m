@@ -267,6 +267,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
 
             if (text) {
                 EZLabel *resultLabel;
+                __block CGSize measuredResultLabelSize = CGSizeZero;
                 BOOL serviceIsStreaming = [self.service isStream];
                 if (errorMessage.length == 0) {
                     EDMarkdownLabel *markdownLabel = [[EDMarkdownLabel alloc] init];
@@ -278,7 +279,15 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
                         if (!self || self.result != expectedResult || expectedLabel.superview != self) {
                             return;
                         }
-                        [self refreshWithResult:self.result];
+                        // Keep the prepared formula batch and selection on the existing label.
+                        EDMarkdownLabel *label = expectedLabel;
+                        CGSize labelSize = [self labelSize:label exceptedWidth:exceptedWidth];
+                        CGFloat heightChange = labelSize.height - measuredResultLabelSize.height;
+                        measuredResultLabelSize = labelSize;
+                        [label mas_updateConstraints:^(MASConstraintMaker *make) {
+                            make.size.mas_equalTo(labelSize).priorityHigh();
+                        }];
+                        self->_viewHeight += heightChange;
                         if (self.updateViewHeightBlock) {
                             self.updateViewHeightBlock(self.viewHeight);
                         }
@@ -324,6 +333,7 @@ static BOOL EZResultHasAnkiContent(EZQueryResult *result) {
                     }
 
                     CGSize labelSize = [self labelSize:resultLabel exceptedWidth:exceptedWidth];
+                    measuredResultLabelSize = labelSize;
                     make.size.mas_equalTo(labelSize).priorityHigh();
 
                     if (explainLabel) {

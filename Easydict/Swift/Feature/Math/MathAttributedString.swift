@@ -11,6 +11,7 @@ enum MathAttributedString {
 
     static func render(
         _ document: MathExpressionParser.Document,
+        results: [String: MathJaxRenderer.Result],
         markdown: MarkdownRenderer?,
         attributes: [NSAttributedString.Key: Any],
         maxWidth: CGFloat
@@ -23,7 +24,7 @@ enum MathAttributedString {
             let tokenAttributes = output.attributes(at: range.location, effectiveRange: nil)
             let font = tokenAttributes[.font] as? NSFont ?? .systemFont(ofSize: 14)
             let color = tokenAttributes[.foregroundColor] as? NSColor ?? .labelColor
-            guard let result = MathJaxRenderer.shared.cached(expression),
+            guard let result = results[expression.cacheKey],
                   let attachment = attachment(result, source: expression.source, font: font, color: color, maxWidth: maxWidth)
             else {
                 output.replaceCharacters(in: range, with: NSAttributedString(string: expression.source, attributes: tokenAttributes))
@@ -66,6 +67,7 @@ enum MathAttributedString {
             Int(rgb.greenComponent * 255), Int(rgb.blueComponent * 255)
         )
         let colored = svg.replacingOccurrences(of: "currentColor", with: colorString)
+            .replacingOccurrences(of: "<svg ", with: "<svg opacity=\"\(rgb.alphaComponent)\" ")
         guard let image = NSImage(data: Data(colored.utf8)) else { return nil }
         let scale = min(font.pointSize, max(1, maxWidth) / result.width)
         image.size = NSSize(width: result.width * scale, height: result.height * scale)

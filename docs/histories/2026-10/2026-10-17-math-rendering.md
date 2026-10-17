@@ -51,6 +51,17 @@
 - 交互回归：LLDB 复现了首次查询因 `MarkdownLabel` 未实现 `init(frame:textContainer:)` 而触发的 fatal error。移除新增 initializer，改在视图挂接窗口时订阅偏好，保留 AppKit 的继承初始化链。修复后同一 hello 查询成功创建窗口，主线程采样正常空闲，32 项既有测试再次通过；旧玻璃分支没有这些 initializer 改动。
 - 手动检查：尚未在实际应用中逐项确认公式选择/复制、经典窗口高度、流式边界与多屏行为，待用户试用反馈；界面自动化此前不可用。
 
+### 2026-10-18：公式闪烁与深浅色外观修复
+
+- 用户反馈 Google 译文中的 `$CWG$`、`$C$`、`$W$`、`$G$` 间歇保留源码，且夜间模式下公式呈黑色；范围覆盖共用 MarkdownLabel 的经典及玻璃窗口。
+- 原代码在构造附件和判断 pending 时分别读取可被后台更新或驱逐的缓存，布局更新又使旧回调失效。改为取得完整结果批次后一次替换，当前标签强持有批次，宽度和外观变化不重新请求或丢弃公式。
+- 在视图 effectiveAppearance 下解析动态前景色并生成 SVG 附件，保留 alpha；外观变化时重新着色。经典结果窗口只更新现有标签尺寸和总高度，避免重建标签丢失批次及选择。
+- Xcode 27.1 (27A9275) Debug arm64 build-for-testing 成功；随后 test-without-building 运行 MarkdownRendererTests、ReverseTranslationTests、OpenAIStreamTaskControlTests，共 32 项既有测试通过。使用默认 macOS 27 图标，未新增或扩写测试。
+- 原生渲染诊断使用用户提供的译文，确认四个公式附件完整、五次宽度调整后仍完整，复制还原 LaTeX；人工检查浅色/深色绘图预览，公式颜色与正文一致。
+- SwiftLint 和 git diff --check 通过；review 检查完整批次、缓存驱逐、失败结果、内容代次、宽度与外观切换、经典高度更新和复制，最终生产文件摘要不变，无进一步有效 finding。
+- 修复版已通过 codesign 校验，替换固定 `build/Easydict-debug.app` 并启动；退出测试目录遗留的第二个进程。CUA 仍超时，实际应用的连续翻译、主题切换及经典窗口交互仍待用户确认；原生预览不替代完整 UI 验收。
+- 本次只修改 `math-rendering`，保留本分支的设置修复；`liquid-glass-mini` 与现有 PR 不变，未推送本次修复。
+
 ### 受影响文件
 
 - `BuildTools/MathJax/`：包装源码、构建脚本、版本锁和说明。

@@ -24,20 +24,34 @@ final class MathJaxRenderer {
         }
     }
 
-    func cached(_ expression: MathExpression) -> Result? {
-        cache.object(forKey: expression.cacheKey as NSString)
+    /// Retain a complete snapshot before the caller starts constructing attachments.
+    func cachedResults(for expressions: [MathExpression]) -> [String: Result]? {
+        var results: [String: Result] = [:]
+        for expression in expressions {
+            guard let result = cache.object(forKey: expression.cacheKey as NSString) else { return nil }
+            results[expression.cacheKey] = result
+        }
+        return results
     }
 
     /// Failed expressions are cached too, so malformed input cannot cause a render loop.
-    func prepare(_ expressions: [MathExpression], completion: @escaping () -> Void) {
+    func prepare(_ expressions: [MathExpression], completion: @escaping ([String: Result]) -> Void) {
         queue.async { [self] in
-            for expression in expressions where cached(expression) == nil {
+            var results: [String: Result] = [:]
+            for expression in expressions {
+                if let result = results[expression.cacheKey] ?? cache.object(forKey: expression.cacheKey as NSString) {
+                    results[expression.cacheKey] = result
+                    continue
+                }
                 let value = context?.objectForKeyedSubscript("renderMath")?
                     .call(withArguments: [expression.tex, expression.display])?.toDictionary() as? [String: Any]
                 let result = Result(value)
+                results[expression.cacheKey] = result
                 cache.setObject(result, forKey: expression.cacheKey as NSString, cost: result.svg?.utf8.count ?? 1)
             }
-            DispatchQueue.main.async(execute: completion)
+            // NSCache can evict entries at any time. Delivery and active labels own their results.
+            let prepared = results
+            DispatchQueue.main.async { completion(prepared) }
         }
     }
 

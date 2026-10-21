@@ -82,3 +82,16 @@
 - 原生译文预览的四个公式完整显示，宽度变化保持稳定，浅色/深色前景与正文匹配；复制保留源 LaTeX。
 - 经典窗口完成回调改为更新原标签的尺寸和总高度，不重建结果视图。
 - CUA 界面读取仍超时；实际浮窗连续显示、主题切换及经典窗口交互等待用户复验，未把原生绘图诊断当作完整 UI 验收。
+
+## 行内公式截断修复（2026-10-22）
+
+- 初始 math-rendering HEAD 为 `faad668a843974f45f5075b3ee7e2a794e1392f2`，工作树干净。
+- [x] 关闭 MathJax 行内断行拆分，重建离线资源；核对用户提供的两条公式和完整 SVG 输出。
+- [x] 构建、现有相关测试、静态检查与 review；更新记录并提交。
+- [x] 在用户授权下替换固定路径调试 app 并重启，玻璃窗口 PR 分支保持不变。
+
+- MathJax 4 行内断行默认生成多个 SVG；原适配器只读取 firstChild。关闭 `linebreaks.inline` 后两条用户公式都生成完整单一 SVG，保留原 display 模式及原生附件缩放。
+- JavaScriptCore → AppKit 原生绘图确认 `a=1` 与 `3\cdot2^{-21}` 的等号、乘号、底数和指数完整可见；未新增或扩写测试。
+- Debug arm64 构建及 MarkdownRendererTests、ReverseTranslationTests、OpenAIStreamTaskControlTests 共 32 项既有测试通过。脚本语法、差异检查、资源重建一致性、打包资源比对、签名校验通过。
+- review 检查关闭行内拆分与 firstChild 契约、现有尺寸及附件缩放；验证后生产文件摘要一致，无进一步有效 finding。
+- 固定路径调试 app 已替换并启动，进程及启动日志已确认；CUA 读取界面仍超时，实际划词浮窗待用户复验。

@@ -62,6 +62,16 @@
 - 修复版已通过 codesign 校验，替换固定 `build/Easydict-debug.app` 并启动；退出测试目录遗留的第二个进程。CUA 仍超时，实际应用的连续翻译、主题切换及经典窗口交互仍待用户确认；原生预览不替代完整 UI 验收。
 - 本次只修改 `math-rendering`，保留本分支的设置修复；`liquid-glass-mini` 与现有 PR 不变，未推送本次修复。
 
+### 2026-10-22：行内公式仅显示首段修复
+
+- 用户提供的 `a=1` 与 `3\cdot2^{-21}` 分别只显示 a 与 3。直接调用离线包即可复现，输入解析树完整，但 MathJax 4 默认启用行内断行，会输出多个 SVG 片段；适配器的 firstChild 只保留第一段。
+- SVG 输出器显式设置 `linebreaks: { inline: false }`，使行内公式使用一个完整 SVG，符合原生文本附件契约。重建并提交离线资源，不修改分隔符、复制、配色或窗口逻辑；较宽公式继续使用现有附件缩放策略。
+- 直接调用修复后的 bundle 核对完整字形；JavaScriptCore 和 AppKit 原生绘图确认两条公式全部字符及指数完整显示。资源连续重建哈希一致：`58570577fab14239c83947482fa56d5f36b040fe498f084270d7b66d935f804c`。
+- Debug arm64 build-for-testing 及 MarkdownRendererTests、ReverseTranslationTests、OpenAIStreamTaskControlTests 共 32 项既有测试通过；脚本语法、git diff --check、构建资源比对与 codesign 校验通过。未新增或扩写测试，既有测试不直接覆盖该输出器配置。
+- review 核对输出器 inline 配置、firstChild 单图契约、display 模式和原生附件尺寸缩放；最终生产文件摘要复验一致，无进一步有效 finding。配置修正比拼接多个 SVG 更直接，避免重新实现片段定位和基线排版。
+- 用户已授权编译重启；保留旧 app 备份后替换固定的 `build/Easydict-debug.app`，进程与启动日志确认新版运行。界面自动化仍超时，实际划词浮窗需用户复验；原生预览不等同完整交互验收。
+- 变更仅在 math-rendering；liquid-glass-mini PR 分支保持 `c20b574c0846234f49b499e7664d8fd372d426b0`，未推送本轮修复。
+
 ### 受影响文件
 
 - `BuildTools/MathJax/`：包装源码、构建脚本、版本锁和说明。

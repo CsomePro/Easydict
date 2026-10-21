@@ -12,7 +12,12 @@ require('@mathjax/src/cjs/input/tex/boldsymbol/BoldsymbolConfiguration.js');
 const adaptor = liteAdaptor();
 RegisterHTMLHandler(adaptor);
 const fail = (_document, _math, error) => { throw error; };
-const output = new SVG({ fontCache: 'none', fontData: MathJaxTexFont });
+// A native text attachment needs one SVG, not MathJax's breakable inline fragments.
+const output = new SVG({
+    fontCache: 'none',
+    fontData: MathJaxTexFont,
+    linebreaks: { inline: false }
+});
 
 globalThis.renderMath = function (tex, display) {
     if (tex.length > 4096) return null;
